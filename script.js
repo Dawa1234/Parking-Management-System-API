@@ -15,8 +15,10 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+// Most Important
 app.use(express.json());
 
+// User Route
 app.use("/user", routeUser);
 
 // Testing function
