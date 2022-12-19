@@ -1,9 +1,12 @@
+// Server
 const express = require("express");
 const app = express();
+// Mongodb Connection
 const mongoose = require("mongoose");
+// Import Route
+const routeUser = require("./Routes/user-route");
 
-app.use(login);
-
+// Database connection
 mongoose.set("strictQuery", true);
 mongoose
   .connect("mongodb://127.0.0.1:27017/PR")
@@ -12,6 +15,11 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+app.use(express.json());
+
+app.use("/user", routeUser);
+
+// Testing function
 function login(req, res, next) {
   res.send("Server is working");
 }
