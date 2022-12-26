@@ -33,6 +33,7 @@ const User = require("../Model/user-model");
 //       .catch((err) => next(err.message));
 //   });
 
+// Get all the resgistered users.
 userRoute.get("/", async (req, res) => {
   let allUser;
   try {
@@ -75,6 +76,32 @@ userRoute.post("/register", (req, res, next) => {
             });
           })
           .catch((err) => next(err));
+      });
+    })
+    .catch((err) => next(err));
+});
+
+userRoute.post("/login", (req, res, next) => {
+  User.findOne({ username: req.body.username })
+    .then((user) => {
+      if (user == null) {
+        res.status(404).json({ message: "User does not exist." });
+        return;
+      }
+
+      bcryptjs.compare(req.body.password, user.password, (err, success) => {
+        if (err) return next(err);
+        if (!success) {
+          let err = new Error("Ivalid Username or Password");
+          return next(err);
+        }
+        let loggedInUser = {
+          userId: user._id,
+          username: user.username,
+          role: user.role,
+        };
+
+        res.status(201).json(loggedInUser);
       });
     })
     .catch((err) => next(err));
