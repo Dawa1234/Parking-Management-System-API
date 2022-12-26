@@ -21,9 +21,15 @@ app.use(express.json());
 // User Route
 app.use("/user", routeUser);
 
-// Testing function
-function login(req, res, next) {
-  res.send("Server is working");
-}
+app.use((err, req, res, next) => {
+  res.status(500).json({ Error: err.message });
+});
 
-app.listen(3000);
+// Testing function
+// function login(req, res, next) {
+//   res.send("Server is working");
+// }
+
+app.listen(3000, () => {
+  console.log("Out port is running at 3000");
+});

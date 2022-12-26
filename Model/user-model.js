@@ -4,11 +4,18 @@ const userModel = mongoose.Schema({
   username: {
     type: String,
     required: true,
-    minLength: 4,
+    unique: [true, "User name already taken!"],
+    minLength: [5, "Usernamr too short."],
+    maxLength: [20, "Usernamr too long."],
   },
   password: {
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    enum: ["User", "Admin"],
+    default: "User",
   },
 });
 
