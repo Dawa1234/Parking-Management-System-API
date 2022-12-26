@@ -53,7 +53,7 @@ userRoute.post("/register", (req, res, next) => {
         return next();
       }
 
-      // Encode the password then
+      // Encrypt the password into a hash then
       // send to the data.
       bcryptjs.hash(req.body.password, 10, (err, hash) => {
         if (err) return next(err);
