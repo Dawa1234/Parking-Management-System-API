@@ -3,6 +3,7 @@ const userRoute = express.Router();
 // Package to encode password.
 const bcryptjs = require("bcryptjs");
 const User = require("../Model/user-model");
+const UserController = require("../Controller/user-Controller");
 // Get all user
 // userRoute
 //   .route("/")
@@ -45,67 +46,10 @@ userRoute.get("/", async (req, res) => {
 });
 
 // Register User
-userRoute.post("/register", (req, res, next) => {
-  User.findOne({ username: req.body.username })
-    .then((user) => {
-      // if a user is exists.
-      if (user != null) {
-        res.status(404).json({ message: "User already exists." });
-        return next();
-      }
+userRoute.post("/register", UserController.registerController);
 
-      // Encrypt the password into a hash then
-      // send to the data.
-      bcryptjs.hash(req.body.password, 10, (err, hash) => {
-        if (err) return next(err);
-        // Save the data in the user variable.
-        user = new User({
-          username: req.body.username,
-          password: hash,
-          role: req.body.role,
-        });
-        // Then save to the database.
-        user
-          .save()
-          .then((user) => {
-            res.status(203).json({
-              status: "User registration successful",
-              userId: user._id,
-              username: user.username,
-              role: user.role,
-            });
-          })
-          .catch((err) => next(err));
-      });
-    })
-    .catch((err) => next(err));
-});
-
-userRoute.post("/login", (req, res, next) => {
-  User.findOne({ username: req.body.username })
-    .then((user) => {
-      if (user == null) {
-        res.status(404).json({ message: "User does not exist." });
-        return;
-      }
-
-      bcryptjs.compare(req.body.password, user.password, (err, success) => {
-        if (err) return next(err);
-        if (!success) {
-          let err = new Error("Ivalid Username or Password");
-          return next(err);
-        }
-        let loggedInUser = {
-          userId: user._id,
-          username: user.username,
-          role: user.role,
-        };
-
-        res.status(201).json(loggedInUser);
-      });
-    })
-    .catch((err) => next(err));
-});
+// User Login
+userRoute.post("/login", UserController.loginController);
 
 // userRoute.route("/:id").get(async (req, res) => {
 //   let validUser;
