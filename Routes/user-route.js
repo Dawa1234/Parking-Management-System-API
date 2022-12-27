@@ -1,8 +1,5 @@
 const express = require("express");
 const userRoute = express.Router();
-// Package to encode password.
-const bcryptjs = require("bcryptjs");
-const User = require("../Model/user-model");
 const UserController = require("../Controller/user-Controller");
 // Get all user
 // userRoute
