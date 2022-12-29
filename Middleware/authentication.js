@@ -1,0 +1,25 @@
+const jwt = require("jsonwebtoken");
+
+const verifyUser = (req, res, next) => {
+  // On authorization token fail.
+  if (!req.headers.authorization) {
+    let err = new Error("Authorization token missing or invalid.");
+    res.status(404);
+    next(err);
+  }
+
+  //   Token recieved as Bearer asd8a7sd987a@&a8sd7a.
+  // So split the string by " " and store 1 index value.
+  let token = req.headers.authorization.split(" ")[1];
+
+  //   if token and the privateKey is matched.
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    if (err) return next(err);
+    req.user = decoded;
+    console.log(req.user);
+    next();
+  });
+  // if(req.headers.authorization)
+};
+
+module.exports = { verifyUser };

@@ -1,5 +1,6 @@
 const express = require("express");
 const userRoute = express.Router();
+const { verifyUser } = require("../Middleware/authentication");
 const UserController = require("../Controller/user-Controller");
 // Get all user
 // userRoute
@@ -32,15 +33,7 @@ const UserController = require("../Controller/user-Controller");
 //   });
 
 // Get all the resgistered users.
-userRoute.get("/", async (req, res) => {
-  let allUser;
-  try {
-    allUser = await User.find();
-    res.status(203).json(allUser);
-  } catch (e) {
-    next(e.message);
-  }
-});
+userRoute.get("/", verifyUser, UserController.getAllUser);
 
 // Register User
 userRoute.post("/register", UserController.registerController);

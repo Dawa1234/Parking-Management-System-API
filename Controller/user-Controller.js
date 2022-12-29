@@ -1,5 +1,17 @@
 const User = require("../Model/user-model");
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+// Get All the user from the database.
+const getAllUser = async (req, res, next) => {
+  let allUser;
+  try {
+    allUser = await User.find();
+    res.status(203).json(allUser);
+  } catch (err) {
+    next(err);
+  }
+};
 
 // User Login
 const loginController = (req, res, next) => {
@@ -21,13 +33,27 @@ const loginController = (req, res, next) => {
           return next(err);
         }
 
+        // Actual Data of the user
         let userData = {
           userId: user._id,
           username: user.username,
           role: user.role,
           message: "Successfully logged in",
         };
-        res.status(203).json(userData);
+
+        // Generating the data into a token.
+        jwt.sign(
+          userData,
+          process.env.SECRET,
+          { expiresIn: "1d" },
+          (err, encoded) => {
+            if (err) return next(err);
+            res.status(203).json({
+              userId: userData.userId,
+              token: encoded,
+            });
+          }
+        );
       });
     })
     .catch((err) => next(err));
@@ -69,4 +95,4 @@ const registerController = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-module.exports = { loginController, registerController };
+module.exports = { loginController, registerController, getAllUser };
