@@ -16,10 +16,19 @@ const verifyUser = (req, res, next) => {
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
     if (err) return next(err);
     req.user = decoded;
-    console.log(req.user);
+    // console.log(req.user);
     next();
   });
   // if(req.headers.authorization)
 };
 
-module.exports = { verifyUser };
+const verifyAdmin = (req, res, next) => {
+  if (req.user.role != "Admin") {
+    let err = new Error("Not Accessed!");
+    res.status(403);
+    return next(err);
+  }
+  next();
+};
+
+module.exports = { verifyUser, verifyAdmin };

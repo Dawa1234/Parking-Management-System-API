@@ -1,6 +1,6 @@
 const express = require("express");
 const userRoute = express.Router();
-const { verifyUser } = require("../Middleware/authentication");
+const { verifyUser, verifyAdmin } = require("../Middleware/authentication");
 const UserController = require("../Controller/user-Controller");
 // Get all user
 // userRoute
@@ -33,7 +33,14 @@ const UserController = require("../Controller/user-Controller");
 //   });
 
 // Get all the resgistered users.
-userRoute.get("/", verifyUser, UserController.getAllUser);
+userRoute.get("/", verifyUser, verifyAdmin, UserController.getAllUser);
+// Delete User Route
+userRoute.post(
+  "/deleteAll",
+  verifyUser,
+  verifyAdmin,
+  UserController.deleteAllUser
+);
 
 // Register User
 userRoute.post("/register", UserController.registerController);

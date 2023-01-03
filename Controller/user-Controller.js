@@ -13,6 +13,36 @@ const getAllUser = async (req, res, next) => {
   }
 };
 
+// Delete All User
+const deleteAllUser = (req, res, next) => {
+  let count = 0;
+  try {
+    User.find()
+      .then((users) => {
+        // Delete All user except current user.
+
+        users.map((user) => {
+          if (user._id == req.user.userId) {
+            return;
+          }
+          User.findByIdAndDelete(user._id)
+            .then((success) => {
+              if (count == 0) {
+                console.log(`${++count} User Deleted`);
+                return;
+              }
+              console.log(`${++count} Users Deleted`);
+            })
+            .catch((err) => next(err));
+        });
+        res.status(203).json({ status: "All users deleted expect yours." });
+      })
+      .catch((err) => next(err));
+  } catch (e) {
+    next(e);
+  }
+};
+
 // User Login
 const loginController = (req, res, next) => {
   User.findOne({ username: req.body.username })
@@ -22,8 +52,6 @@ const loginController = (req, res, next) => {
         res.status(403);
         return next(err);
       }
-      // user.username;
-      // user.password;
 
       bcryptjs.compare(req.body.password, user.password, (err, success) => {
         if (err) return next(err);
@@ -74,6 +102,9 @@ const registerController = (req, res, next) => {
         if (err) return next(err);
         // Save the data in the user variable.
         user = new User({
+          fullname: req.body.fullname,
+          email: req.body.email,
+          contact: req.body.contact,
           username: req.body.username,
           password: hash,
           role: req.body.role,
@@ -83,6 +114,9 @@ const registerController = (req, res, next) => {
           .save()
           .then((newUser) => {
             res.status(203).json({
+              fullname: req.body.fullname,
+              email: req.body.email,
+              contact: req.body.contact,
               username: newUser.username,
               userId: newUser._id,
               status: "Registered Successfully",
@@ -95,4 +129,9 @@ const registerController = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-module.exports = { loginController, registerController, getAllUser };
+module.exports = {
+  loginController,
+  registerController,
+  getAllUser,
+  deleteAllUser,
+};
