@@ -26,7 +26,7 @@ const deleteAllUser = (req, res, next) => {
             return;
           }
           User.findByIdAndDelete(user._id)
-            .then((success) => {
+            .then(() => {
               if (count == 0) {
                 console.log(`${++count} User Deleted`);
                 return;
@@ -79,6 +79,8 @@ const loginController = (req, res, next) => {
             res.status(203).json({
               userId: userData.userId,
               token: encoded,
+              role: userData.role,
+              status: "LOG IN Successful.",
             });
           }
         );

@@ -6,6 +6,10 @@ const app = express();
 const mongoose = require("mongoose");
 // Import Route
 const routeUser = require("./Routes/user-route");
+const routeVehicle = require("./Routes/vehicleCategory-route");
+const routeParking = require("./Routes/parkingSlot-route");
+// Authentication Middleware.
+const authentication = require("./Middleware/authentication");
 
 // Database connection
 mongoose.set("strictQuery", true);
@@ -21,6 +25,9 @@ app.use(express.json());
 
 // User Route
 app.use("/user", routeUser);
+app.use(authentication.verifyUser);
+app.use("/vehicle", routeVehicle);
+app.use("/parkingSlot", routeParking);
 
 app.use((err, req, res, next) => {
   res.status(500).json({ Error: err.message });

@@ -35,7 +35,7 @@ const UserController = require("../Controller/user-Controller");
 // Get all the resgistered users.
 userRoute.get("/", verifyUser, verifyAdmin, UserController.getAllUser);
 // Delete User Route
-userRoute.post(
+userRoute.delete(
   "/deleteAll",
   verifyUser,
   verifyAdmin,
