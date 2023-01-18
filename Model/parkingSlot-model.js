@@ -9,11 +9,9 @@ const parkingSlotSchema = mongoose.Schema({
     type: Boolean,
     required: true,
   },
-  user: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "UserModel",
-    },
-  ],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "UserModel",
+  },
 });
 module.exports = mongoose.model("ParkModel", parkingSlotSchema);

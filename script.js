@@ -25,7 +25,7 @@ app.use(express.json());
 
 // User Route
 app.use("/user", routeUser);
-app.use(authentication.verifyUser);
+// app.use(authentication.verifyUser);
 app.use("/vehicle", routeVehicle);
 app.use("/parkingSlot", routeParking);
 
