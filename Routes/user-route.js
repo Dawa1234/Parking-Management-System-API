@@ -13,23 +13,6 @@ const UserController = require("../Controller/user-Controller");
 //     } catch (e) {
 //       next(e.message);
 //     }
-//   })
-//   .post(async (req, res, next) => {
-//     const newUser = new User({
-//       username: req.body.username,
-//       password: req.body.password,
-//     });
-//     try {
-//       const newUserCreated = await newUser.save();
-//       res.status(201).json(newUserCreated);
-//     } catch (e) {
-//       next(e.message);
-//     }
-//   })
-//   .delete((req, res, next) => {
-//     User.deleteMany()
-//       .then((message) => res.status(201).json({ message: "Users Deleted." }))
-//       .catch((err) => next(err.message));
 //   });
 
 // Get all the resgistered users.

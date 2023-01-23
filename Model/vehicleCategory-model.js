@@ -5,5 +5,11 @@ const vehicleCategorySchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  floor: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "floormodel",
+    },
+  ],
 });
 module.exports = mongoose.model("vehicleCategoryModel", vehicleCategorySchema);
