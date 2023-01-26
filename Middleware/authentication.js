@@ -19,10 +19,14 @@ const verifyUser = (req, res, next) => {
     // console.log(req.user);
     next();
   });
-  // if(req.headers.authorization)
 };
 
 const verifyAdmin = (req, res, next) => {
+  // console.log(req.user);
+  if (!req.user) {
+    let err = new Error("No data from req.user!");
+    return next(err);
+  }
   if (req.user.role != "Admin") {
     let err = new Error("Not Accessed!");
     res.status(403);

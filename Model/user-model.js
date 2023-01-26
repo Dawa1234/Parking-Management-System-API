@@ -19,7 +19,7 @@ const userModel = mongoose.Schema({
   email: {
     // Email
     type: String,
-    required: true,
+    required: false,
   },
   carLiscencePlateNum: {
     // Car plate number.

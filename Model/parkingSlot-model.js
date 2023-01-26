@@ -30,6 +30,7 @@ const parkingSlotSchema = mongoose.Schema({
   floor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "floormodel",
+    required: true,
   },
   // Booked by
   user: {

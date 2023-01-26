@@ -1,34 +1,37 @@
 const parkingModel = require("../Model/parkingSlot-model");
 
-// Create a new parking slot.
+// ------------------------- New Parking slot  -------------------------
 const newParkingSlot = (req, res, next) => {
   try {
-    let parkingData = {
-      slot: req.body.slot,
-      booked: false,
-    };
-    parkingModel
-      .create(parkingData)
-      .then((data) => {
-        res.status(200).json(data);
-      })
-      .catch((err) => next(err));
+    parkingModel.findOne({ slot: req.body.slot }).then((newSlot) => {
+      if (newSlot != null) {
+        let err = new Error(`Slot [${req.body.slot}] already exists`);
+        return next(err);
+      }
+      parkingModel
+        .create(req.body)
+        .then((data) => {
+          res.status(200).json(data);
+        })
+        .catch((err) => next(err));
+    });
   } catch (e) {
     next(e);
   }
 };
 
-// Get all parking slots
+// ------------------------- All Parking slots -------------------------
 const parkingSlots = (req, res, next) => {
   parkingModel
     .find({})
+    .populate("floor")
     .populate("user")
     .then((slots) => {
       res.status(201).json(slots);
     })
     .catch((err) => next(err));
 };
-// Get all parking slots by id.
+// ------------------------- All parking slots by id -------------------------
 const parkingSlotsById = (req, res, next) => {
   parkingModel
     .findById(req.params.slotId)
@@ -38,7 +41,7 @@ const parkingSlotsById = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-// Book parking slot
+// ------------------------- Book parking slot -------------------------
 const bookParkingSlot = (req, res, next) => {
   parkingModel
     .findByIdAndUpdate(req.params.slotId, { $set: req.body }, { new: true })
@@ -56,9 +59,23 @@ const bookParkingSlot = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+// ------------------------------ Delete all slots ------------------------------
+const deleteParkingSlots = (req, res, next) => {
+  try {
+    parkingModel.deleteMany().then(() => {
+      res.status(200).json({
+        message: "All users deleted",
+      });
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 module.exports = {
   newParkingSlot,
   parkingSlots,
   parkingSlotsById,
   bookParkingSlot,
+  deleteParkingSlots,
 };

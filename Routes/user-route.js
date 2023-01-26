@@ -2,46 +2,22 @@ const express = require("express");
 const userRoute = express.Router();
 const { verifyUser, verifyAdmin } = require("../Middleware/authentication");
 const UserController = require("../Controller/user-Controller");
-// Get all user
-// userRoute
-//   .route("/")
-//   .get(async (req, res, next) => {
-//     let allUser;
-//     try {
-//       allUser = await User.find();
-//       res.status(201).json(allUser);
-//     } catch (e) {
-//       next(e.message);
-//     }
-//   });
 
-// Get all the resgistered users.
+// -------------------- See all users ------------------------------
 userRoute.get("/", verifyUser, verifyAdmin, UserController.getAllUser);
-// Delete User Route
+
+// -------------------- Add User -------------------------
+userRoute.post("/register", UserController.registerController);
+
+// -------------------- Login User -------------------------
+userRoute.post("/login", UserController.loginController);
+
+// -------------------- Delete User --------------------
 userRoute.delete(
   "/deleteAll",
   verifyUser,
   verifyAdmin,
   UserController.deleteAllUser
 );
-
-// Register User
-userRoute.post("/register", UserController.registerController);
-
-// User Login
-userRoute.post("/login", UserController.loginController);
-
-// userRoute.route("/:id").get(async (req, res) => {
-//   let validUser;
-//   try {
-//     validUser = await User.findById(req.params.id);
-//     if (validUser == null) {
-//       return res.status(404).json({ message: "User does not exists." });
-//     }
-//     res.status(201).json(validUser);
-//   } catch (e) {
-//     next(e.message);
-//   }
-// });
 
 module.exports = userRoute;

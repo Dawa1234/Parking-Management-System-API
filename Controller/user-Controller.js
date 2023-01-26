@@ -2,7 +2,7 @@ const User = require("../Model/user-model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// Get All the user from the database.
+// --------------- See all user -------------------------
 const getAllUser = async (req, res, next) => {
   let allUser;
   try {
@@ -13,14 +13,12 @@ const getAllUser = async (req, res, next) => {
   }
 };
 
-// Delete All User
+// ------------------------- Delete All User except logged in one -------------------------
 const deleteAllUser = (req, res, next) => {
   let count = 0;
   try {
     User.find()
       .then((users) => {
-        // Delete All user except current user.
-
         users.map((user) => {
           if (user._id == req.user.userId) {
             return;
@@ -43,16 +41,17 @@ const deleteAllUser = (req, res, next) => {
   }
 };
 
-// User Login
+// ------------------------- Login -------------------------
 const loginController = (req, res, next) => {
   User.findOne({ username: req.body.username })
     .then((user) => {
+      // If user doesnot exist.
       if (user == null) {
         let err = new Error("Invalid Credintials");
         res.status(403);
         return next(err);
       }
-
+      // Compare user password and user's hashed password.
       bcryptjs.compare(req.body.password, user.password, (err, success) => {
         if (err) return next(err);
         if (!success) {
@@ -63,10 +62,13 @@ const loginController = (req, res, next) => {
 
         // Actual Data of the user
         let userData = {
-          userId: user._id,
           username: user.username,
+          password: user.password,
+          profileImage: user.profileImage,
+          fullname: user.fullname,
+          constact: user.contact,
+          email: user.email,
           role: user.role,
-          message: "Successfully logged in",
         };
 
         // Generating the data into a token.
@@ -77,10 +79,10 @@ const loginController = (req, res, next) => {
           (err, encoded) => {
             if (err) return next(err);
             res.status(203).json({
-              userId: userData.userId,
+              success: true,
               token: encoded,
               role: userData.role,
-              status: "LOG IN Successful.",
+              status: "LOGGED IN Successful.",
             });
           }
         );
@@ -89,6 +91,7 @@ const loginController = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+// ------------------------- Register -------------------------
 const registerController = (req, res, next) => {
   User.findOne({ username: req.body.username })
     .then((user) => {
@@ -105,8 +108,10 @@ const registerController = (req, res, next) => {
         // Save the data in the user variable.
         user = new User({
           fullname: req.body.fullname,
-          email: req.body.email,
           contact: req.body.contact,
+          email: req.body.email,
+          carLiscencePlateNum: req.body.carLiscencePlateNum,
+          bikeLiscencePlateNum: req.body.bikeLiscencePlateNum,
           username: req.body.username,
           password: hash,
           role: req.body.role,
