@@ -15,7 +15,6 @@ const getAllUser = async (req, res, next) => {
 
 // ------------------------- Delete All User except logged in one -------------------------
 const deleteAllUser = (req, res, next) => {
-  let count = 0;
   try {
     User.find()
       .then((users) => {
@@ -23,17 +22,11 @@ const deleteAllUser = (req, res, next) => {
           if (user._id == req.user.userId) {
             return;
           }
-          User.findByIdAndDelete(user._id)
-            .then(() => {
-              if (count == 0) {
-                console.log(`${++count} User Deleted`);
-                return;
-              }
-              console.log(`${++count} Users Deleted`);
-            })
-            .catch((err) => next(err));
+          User.findByIdAndDelete(user._id).then(() => {
+            console.log("Delete ");
+          });
         });
-        res.status(203).json({ status: "All users deleted expect yours." });
+        res.status(203).json({ status: "All users deleted except yours" });
       })
       .catch((err) => next(err));
   } catch (e) {
@@ -62,11 +55,12 @@ const loginController = (req, res, next) => {
 
         // Actual Data of the user
         let userData = {
+          userId: user._id,
           username: user.username,
           password: user.password,
           profileImage: user.profileImage,
           fullname: user.fullname,
-          constact: user.contact,
+          contact: user.contact,
           email: user.email,
           role: user.role,
         };
@@ -79,7 +73,8 @@ const loginController = (req, res, next) => {
           (err, encoded) => {
             if (err) return next(err);
             res.status(203).json({
-              success: true,
+              userId: userData.userId,
+              user: userData,
               token: encoded,
               role: userData.role,
               status: "LOGGED IN Successful.",
@@ -95,37 +90,33 @@ const loginController = (req, res, next) => {
 const registerController = (req, res, next) => {
   User.findOne({ username: req.body.username })
     .then((user) => {
-      // if a user is exists.
+      //     // if a user is exists.
       if (user != null) {
         let err = new Error("User already taken.");
         res.status(403);
         return next(err);
       }
-      // Encrypt the password into a hash then
-      // send to the data.
+
+      //     // Encrypt the password into a hash then
+      //     // send to the data.
       bcryptjs.hash(req.body.password, 10, (err, hash) => {
-        if (err) return next(err);
-        // Save the data in the user variable.
+        //       //   if (err) return next(err);
+        //       //   // Save the data in the user variable.
         user = new User({
           fullname: req.body.fullname,
           contact: req.body.contact,
           email: req.body.email,
-          carLiscencePlateNum: req.body.carLiscencePlateNum,
-          bikeLiscencePlateNum: req.body.bikeLiscencePlateNum,
           username: req.body.username,
           password: hash,
           role: req.body.role,
         });
-        // Then save to the database.
+        //       //   // Then save to the database.
+
         user
           .save()
           .then((newUser) => {
-            res.status(203).json({
-              fullname: req.body.fullname,
-              email: req.body.email,
-              contact: req.body.contact,
-              username: newUser.username,
-              userId: newUser._id,
+            res.status(201).json({
+              user: newUser,
               status: "Registered Successfully",
               role: newUser.role,
             });

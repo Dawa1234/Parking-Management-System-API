@@ -21,23 +21,11 @@ const userModel = mongoose.Schema({
     type: String,
     required: false,
   },
-  carLiscencePlateNum: {
-    // Car plate number.
-    type: String,
-    required: false,
-  },
-  bikeLiscencePlateNum: {
-    // Bike plate number
-    type: String,
-    required: false,
-  },
   username: {
     // Username
     type: String,
     required: true,
     unique: [true, "User name already taken!"],
-    minLength: [5, "Usernamr too short."],
-    maxLength: [20, "Usernamr too long."],
   },
   password: {
     // Password

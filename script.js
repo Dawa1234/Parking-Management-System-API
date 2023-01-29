@@ -2,6 +2,8 @@
 require("dotenv").config();
 // ------------------ Server ------------------
 const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
 const app = express();
 // ------------------ Mongodb Connection ------------------
 const mongoose = require("mongoose");
@@ -23,12 +25,16 @@ mongoose
   .catch((err) => console.log(err));
 
 // --------------------------- Most Important ---------------------------
+app.use(morgan("tiny"));
+app.use(cors());
+app.options("*", cors());
 app.use(express.json());
+app.use(express.urlencoded({ urlencoded: true }));
 
 // ------------------ Routes ------------------------------------
 // User Route
 app.use("/user", routeUser);
-// app.use(authentication.verifyUser);
+app.use(authentication.verifyUser);
 app.use("/vehicle", routeVehicle);
 app.use("/parkingSlot", routeParking);
 app.use("/floor", routeFloor);
@@ -38,6 +44,6 @@ app.use((err, req, res, next) => {
 });
 
 // --------------------------- Running Port ---------------------------
-app.listen(3000, () => {
-  console.log("Out port is running at 3000");
+app.listen(3001, () => {
+  console.log("Out port is running at 3001");
 });
