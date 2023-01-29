@@ -21,6 +21,7 @@ const verifyUser = (req, res, next) => {
   });
 };
 
+// Admin verification
 const verifyAdmin = (req, res, next) => {
   // console.log(req.user);
   if (!req.user) {
