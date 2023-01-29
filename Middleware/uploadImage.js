@@ -20,6 +20,7 @@ const imagefileFilter = (req, file, cb) => {
   cb(null, true);
 };
 
+// Upload Image
 const uploadImage = multer({
   storage: storageDisk,
   fileFilter: imagefileFilter,
