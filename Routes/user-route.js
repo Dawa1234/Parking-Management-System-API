@@ -8,9 +8,10 @@ const uploadImage = require("../Middleware/uploadImage");
 userRoute.get("/", verifyUser, verifyAdmin, UserController.getAllUser);
 
 // -------------------- Add User -------------------------
+
 userRoute.post(
   "/register",
-  uploadImage.single("profileImage"),
+  uploadImage.single("profileImage"), // uplaod image
   UserController.registerController
 );
 
@@ -24,5 +25,5 @@ userRoute.delete(
   verifyAdmin,
   UserController.deleteAllUser
 );
-
+// eporting module.
 module.exports = userRoute;
