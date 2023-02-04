@@ -5,6 +5,7 @@ const floorRoute = express.Router();
 floorRoute
   .route("/")
   .get(floorController.allFloors) // All floors
-  .post(floorController.newFloor); // Add new floor
+  .post(floorController.newFloor) // Add new floor
+  .delete(floorController.deleteAllFloor); // Add new floor
 
 module.exports = floorRoute;

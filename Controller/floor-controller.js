@@ -28,7 +28,18 @@ const allFloors = (req, res, next) => {
   }
 };
 
+const deleteAllFloor = (req, res, next) => {
+  try {
+    floorModel.deleteMany().then(() => {
+      res.status(201).json({ message: "All floors deleted" });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   newFloor,
   allFloors,
+  deleteAllFloor,
 };

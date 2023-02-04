@@ -25,6 +25,7 @@ mongoose
   .catch((err) => console.log(err));
 
 // --------------------------- Most Important ---------------------------
+// To see request.
 app.use(morgan("tiny"));
 app.use(cors());
 app.options("*", cors());

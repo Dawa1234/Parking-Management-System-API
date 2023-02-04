@@ -55,7 +55,7 @@ const loginController = (req, res, next) => {
 
         // Actual Data of the user
         let userData = {
-          userId: user._id,
+          _id: user._id,
           username: user.username,
           password: user.password,
           profileImage: user.profileImage,
@@ -73,7 +73,6 @@ const loginController = (req, res, next) => {
           (err, encoded) => {
             if (err) return next(err);
             res.status(203).json({
-              userId: userData.userId,
               user: userData,
               token: encoded,
               role: userData.role,
@@ -90,18 +89,21 @@ const loginController = (req, res, next) => {
 const registerController = (req, res, next) => {
   User.findOne({ username: req.body.username })
     .then((user) => {
-      //     // if a user is exists.
+      // if a user is exists.
       if (user != null) {
-        let err = new Error("User already taken.");
-        res.status(403);
-        return next(err);
+        let err = new Error("Username already taken.");
+        res.status(403).json({
+          error: err.message,
+        });
+        return;
+        // return next(err);
       }
 
-      //     // Encrypt the password into a hash then
-      //     // send to the data.
+      // Encrypt the password into a hash then
+      // send to the data.
       bcryptjs.hash(req.body.password, 10, (err, hash) => {
-        //       //   if (err) return next(err);
-        //       //   // Save the data in the user variable.
+        if (err) return next(err);
+        // Save the data in the user variable.
         user = new User({
           fullname: req.body.fullname,
           contact: req.body.contact,
@@ -110,8 +112,7 @@ const registerController = (req, res, next) => {
           password: hash,
           role: req.body.role,
         });
-        //       //   // Then save to the database.
-
+        // Then save to the database.
         user
           .save()
           .then((newUser) => {

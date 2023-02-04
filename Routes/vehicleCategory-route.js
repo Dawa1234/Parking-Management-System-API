@@ -7,4 +7,9 @@ vehicleRoute
   .get(vehicleController.getAllVehicle) // See all vehicles
   .post(vehicleController.newVehicleCategory); // Add new vehicle
 
+vehicleRoute
+  .route("/:vehicleId")
+  .post(vehicleController.addFloorInVehicleById) // See vehicle by id
+  .delete(vehicleController.deleteFloorFromVehicle); // See vehicle by id
+
 module.exports = vehicleRoute;

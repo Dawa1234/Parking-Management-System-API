@@ -11,7 +11,7 @@ userRoute.get("/", verifyUser, verifyAdmin, UserController.getAllUser);
 
 userRoute.post(
   "/register",
-  uploadImage.single("profileImage"), // uplaod image
+  // uploadImage.single("profileImage"), // uplaod image
   UserController.registerController
 );
 

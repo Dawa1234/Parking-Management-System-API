@@ -1,5 +1,5 @@
 const vehicleModel = require("../Model/vehicleCategory-model");
-
+const floorModel = require("../Model/floor-model");
 // ------------------ New vehicle ------------------------------
 const newVehicleCategory = (req, res, next) => {
   try {
@@ -30,7 +30,38 @@ const getAllVehicle = (req, res, next) => {
     return next(err);
   }
 };
+
+const addFloorInVehicleById = (req, res, next) => {
+  try {
+    vehicleModel.findById(req.params.vehicleId).then((vehicle) => {
+      floorModel.create(req.body).then((newFloor) => {
+        vehicle.floor.push(newFloor._id);
+        vehicle.save().then(() => {
+          res.status(201).json(vehicle.floor);
+        });
+      });
+    });
+  } catch (e) {
+    next(err);
+  }
+};
+
+const deleteFloorFromVehicle = (req, res, next) => {
+  try {
+    vehicleModel.findById(req.params.vehicleId).then((vehilce) => {
+      vehilce.floor = [];
+      vehilce.save().then((updatedVehicle) => {
+        res.status(200).json({ message: updatedVehicle });
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getAllVehicle,
+  addFloorInVehicleById,
   newVehicleCategory,
+  deleteFloorFromVehicle,
 };
