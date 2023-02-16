@@ -128,9 +128,42 @@ const registerController = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+// ------------------------------------------------ Delete User by id ------------------------------------------------
+const deleteUserById = (req, res, next) => {
+  console.log(req.query.userId);
+  User.findById(req.query.userId)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => next(err));
+};
+
+// ------------------------------------------------ Update User by id ------------------------------------------------
+const updateUserById = (req, res, next) => {
+  console.log(req.query.userId);
+  User.findByIdAndUpdate(req.query.userId, { $set: req.body }, { new: true })
+    .then((updatedUser) => {
+      res.status(200).json(updatedUser);
+    })
+    .catch((err) => next(err));
+};
+
+// ------------------------------------------------ Get User by id ------------------------------------------------
+const getUserById = (req, res, next) => {
+  console.log(req.query.userId);
+  User.findById(req.query.userId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((err) => next(err));
+};
+
 module.exports = {
   loginController,
   registerController,
   getAllUser,
+  getUserById,
   deleteAllUser,
+  deleteUserById,
+  updateUserById,
 };

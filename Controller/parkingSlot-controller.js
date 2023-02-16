@@ -27,7 +27,18 @@ const parkingSlots = (req, res, next) => {
     .populate("floor")
     .populate("user")
     .then((slots) => {
-      res.status(201).json(slots);
+      let allSlots = slots.map((slot) => {
+        return {
+          _id: slot._id,
+          slot: slot.slot,
+          row: slot.row,
+          column: slot.column,
+          booked: slot.booked,
+          occupied: slot.occupied,
+          floorId: slot.floor.floorNum,
+        };
+      });
+      res.status(201).json({ parkingSlots: allSlots });
     })
     .catch((err) => next(err));
 };

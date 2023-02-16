@@ -23,9 +23,12 @@ const newVehicleCategory = (req, res, next) => {
 // ------------------ See all vehicles ------------------------
 const getAllVehicle = (req, res, next) => {
   try {
-    vehicleModel.find().then((allVehicle) => {
-      res.status(201).json(allVehicle);
-    });
+    vehicleModel
+      .find()
+      .populate("floor")
+      .then((allVehicle) => {
+        res.status(201).json(allVehicle);
+      });
   } catch (err) {
     return next(err);
   }
