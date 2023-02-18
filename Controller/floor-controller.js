@@ -28,6 +28,7 @@ const allFloors = (req, res, next) => {
   }
 };
 
+// -------------------------------- Get All Floor --------------------------------
 const deleteAllFloor = (req, res, next) => {
   try {
     floorModel.deleteMany().then(() => {
@@ -38,8 +39,39 @@ const deleteAllFloor = (req, res, next) => {
   }
 };
 
+// -------------------------------- Update a Floor --------------------------------
+const updateFloor = (req, res, next) => {
+  try {
+    floorModel
+      .findByIdAndUpdate(req.params.floorId, { $set: req.body }, { new: true })
+      .then((floor) => {
+        res.status(200).json(req.body);
+      })
+      .catch((err) => next(err));
+  } catch (e) {
+    next(e);
+  }
+};
+
+// -------------------------------- Get parkingSlot of a Floor --------------------------------
+const getParkingSlots = (req, res, next) => {
+  try {
+    floorModel
+      .findById(req.params.floorId)
+      .populate("parkingSlot")
+      .then((parkingSlot) => {
+        res.status(200).json({ parkingSlots: parkingSlot.parkingSlot });
+      })
+      .catch((err) => next(err));
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   newFloor,
   allFloors,
   deleteAllFloor,
+  updateFloor,
+  getParkingSlots,
 };

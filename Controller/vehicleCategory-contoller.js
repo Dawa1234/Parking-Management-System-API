@@ -27,7 +27,7 @@ const getAllVehicle = (req, res, next) => {
       .find()
       .populate("floor")
       .then((allVehicle) => {
-        res.status(201).json(allVehicle);
+        res.status(201).json({ vehicle: allVehicle });
       });
   } catch (err) {
     return next(err);

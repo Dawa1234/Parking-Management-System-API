@@ -131,9 +131,12 @@ const registerController = (req, res, next) => {
 // ------------------------------------------------ Delete User by id ------------------------------------------------
 const deleteUserById = (req, res, next) => {
   console.log(req.query.userId);
-  User.findById(req.query.userId)
+  User.findByIdAndDelete(req.query.userId)
     .then((result) => {
-      res.status(200).json(result);
+      res.status(200).json({
+        message: "Successfully deleted User",
+        user: result,
+      });
     })
     .catch((err) => next(err));
 };
