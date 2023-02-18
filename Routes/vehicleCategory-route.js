@@ -10,6 +10,7 @@ vehicleRoute
 vehicleRoute
   .route("/:vehicleId")
   .post(vehicleController.addFloorInVehicleById) // Add floor in vehicle by id
+  .put(vehicleController.updateFloorInVehicleById) // Add floor in vehicle by id
   .delete(vehicleController.deleteFloorFromVehicle); // See vehicle by id
 
 module.exports = vehicleRoute;

@@ -36,6 +36,8 @@ const parkingSlots = (req, res, next) => {
           booked: slot.booked,
           occupied: slot.occupied,
           floorId: slot.floor.floorNum,
+          user: slot.user,
+          // bookedBy: slot.user,
         };
       });
       res.status(201).json({ parkingSlots: allSlots });
@@ -69,13 +71,29 @@ const bookParkingSlot = (req, res, next) => {
     })
     .catch((err) => next(err));
 };
+// ------------------------- Book parking slot -------------------------
+const bookSelectedSlots = (req, res, next) => {
+  // store in the variable
+  let userId = req.body.userId;
+  let selectedSlots = req.body.parkingSlots;
+  // map and updated each slots.
+  selectedSlots.map((slotId) => {
+    parkingModel.findById(slotId).then((slot) => {
+      console.log(userId);
+      slot.userId = userId;
+      slot.booked = true;
+      slot.save();
+    });
+  });
+  res.status(200).json({ parkingSlots: req.body.parkingSlots });
+};
 
 // ------------------------------ Delete all slots ------------------------------
 const deleteParkingSlots = (req, res, next) => {
   try {
     parkingModel.deleteMany().then(() => {
       res.status(200).json({
-        message: "All users deleted",
+        message: "All slots deleted",
       });
     });
   } catch (err) {
@@ -89,4 +107,5 @@ module.exports = {
   parkingSlotsById,
   bookParkingSlot,
   deleteParkingSlots,
+  bookSelectedSlots,
 };

@@ -34,6 +34,7 @@ const getAllVehicle = (req, res, next) => {
   }
 };
 
+// Add new floor in the vehicle
 const addFloorInVehicleById = (req, res, next) => {
   try {
     vehicleModel.findById(req.params.vehicleId).then((vehicle) => {
@@ -42,6 +43,20 @@ const addFloorInVehicleById = (req, res, next) => {
         vehicle.save().then(() => {
           res.status(201).json(vehicle.floor);
         });
+      });
+    });
+  } catch (e) {
+    next(err);
+  }
+};
+
+// Update floors in vehicle
+const updateFloorInVehicleById = (req, res, next) => {
+  try {
+    vehicleModel.findById(req.params.vehicleId).then((vehicle) => {
+      vehicle.floor.push(req.body.floor);
+      vehicle.save().then((newVehicle) => {
+        res.status(200).json(newVehicle);
       });
     });
   } catch (e) {
@@ -65,6 +80,7 @@ const deleteFloorFromVehicle = (req, res, next) => {
 module.exports = {
   getAllVehicle,
   addFloorInVehicleById,
+  updateFloorInVehicleById,
   newVehicleCategory,
   deleteFloorFromVehicle,
 };

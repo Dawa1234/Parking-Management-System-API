@@ -41,11 +41,25 @@ const deleteAllFloor = (req, res, next) => {
 
 // -------------------------------- Update a Floor --------------------------------
 const updateFloor = (req, res, next) => {
+  // let data = [];
+  let parkingSlot = req.body.parkingSlot;
+  // data = data.concat(req.body.parkingSlot);
+  // console.log(parkingSlot);
+  // console.log(data);
+  // const arr1 = ["Cecilie", "Lone"];
+  // const arr2 = [1, 2, 3];
+  // const arr3 = arr1.concat(arr2);
+  // console.log(arr3);
   try {
     floorModel
-      .findByIdAndUpdate(req.params.floorId, { $set: req.body }, { new: true })
+      .findById(req.params.floorId)
       .then((floor) => {
-        res.status(200).json(req.body);
+        let currentParkingSlot = floor.parkingSlot;
+        let newParkingSlots = req.body.parkingSlot;
+        floor.parkingSlot = currentParkingSlot.concat(newParkingSlots);
+        floor.save().then((newFloor) => {
+          res.status(200).json(newFloor);
+        });
       })
       .catch((err) => next(err));
   } catch (e) {

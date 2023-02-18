@@ -14,7 +14,8 @@ floorRoute
   .put(floorController.updateFloor) // Update floor
   .delete(floorController.deleteAllFloor); // Add new floor
 
-floorRoute.route("/:floorId/parkingSlots").get(floorController.getParkingSlots); // All floors
+floorRoute.route("/:floorId/parkingSlots").get(floorController.getParkingSlots);
+// All floors
 // .put(floorController.updateFloor) // Update floor
 // .delete(floorController.deleteAllFloor); // Add new floor
 

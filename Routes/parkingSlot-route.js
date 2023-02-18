@@ -13,4 +13,6 @@ parkingRoute
   .get(parkingController.parkingSlotsById) // get parking slot by _id.
   .put(parkingController.bookParkingSlot); // book parking slot
 
+parkingRoute.put("/", parkingController.bookSelectedSlots);
+
 module.exports = parkingRoute;

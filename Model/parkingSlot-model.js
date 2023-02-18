@@ -27,13 +27,13 @@ const parkingSlotSchema = mongoose.Schema({
     default: false,
   },
   // which floor
-  floor: {
+  floorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "floormodel",
     required: true,
   },
   // Booked by
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "usermodel",
   },
