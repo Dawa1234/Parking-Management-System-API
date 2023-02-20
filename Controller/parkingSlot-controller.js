@@ -24,8 +24,8 @@ const newParkingSlot = (req, res, next) => {
 const parkingSlots = (req, res, next) => {
   parkingModel
     .find({})
-    .populate("floor")
-    .populate("user")
+    .populate("floorId")
+    .populate("userId")
     .then((slots) => {
       let allSlots = slots.map((slot) => {
         return {
@@ -35,8 +35,8 @@ const parkingSlots = (req, res, next) => {
           column: slot.column,
           booked: slot.booked,
           occupied: slot.occupied,
-          floorId: slot.floor.floorNum,
-          user: slot.user,
+          floorId: slot.floorId.floorNum,
+          user: slot.userId,
           // bookedBy: slot.user,
         };
       });

@@ -4,6 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const path = require("path");
 const app = express();
 // ------------------ Mongodb Connection ------------------
 const mongoose = require("mongoose");
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ urlencoded: true }));
 
 // ------------------ Routes ------------------------------------
 // User Route
+app.use("/Images", express.static(path.join(__dirname, "/Images")));
 app.use("/user", routeUser);
 app.use(authentication.verifyUser);
 app.use("/vehicle", routeVehicle);

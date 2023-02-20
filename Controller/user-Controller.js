@@ -143,10 +143,31 @@ const deleteUserById = (req, res, next) => {
 
 // ------------------------------------------------ Update User by id ------------------------------------------------
 const updateUserById = (req, res, next) => {
-  console.log(req.query.userId);
-  User.findByIdAndUpdate(req.query.userId, { $set: req.body }, { new: true })
-    .then((updatedUser) => {
-      res.status(200).json(updatedUser);
+  const userId = req.query.userId;
+  const newUser = req.body;
+  const file = req.file;
+  console.log(file);
+  User.findById(userId)
+    .then((user) => {
+      if (user == null) {
+        let err = new Error("User does not exist");
+        return next(err);
+      }
+      // if contains image
+      if (file) {
+        user.profileImage = "Images/" + file.filename;
+      } else {
+        user.profileImage = "";
+      }
+      // Update the data
+      user.fullname = newUser.fullname;
+      user.email = newUser.email;
+      user.contact = newUser.contact;
+      user.username = newUser.username;
+      // then save
+      user.save().then((updatedUser) => {
+        res.status(200).json(updatedUser);
+      });
     })
     .catch((err) => next(err));
 };

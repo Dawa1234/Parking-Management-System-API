@@ -5,7 +5,7 @@ const verifyUser = (req, res, next) => {
   if (!req.headers.authorization) {
     let err = new Error("Authorization token missing or invalid.");
     res.status(404);
-    next(err);
+    return next(err);
   }
 
   //   Token recieved as Bearer asd8a7sd987a@&a8sd7a.

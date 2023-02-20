@@ -28,7 +28,12 @@ userRoute.delete(
   UserController.deleteAllUser
 );
 // -------------------- Delete User By Id --------------------
-userRoute.put("/updateProfile", verifyUser, UserController.updateUserById);
+userRoute.put(
+  "/updateProfile",
+  uploadImage.single("image"),
+  verifyUser,
+  UserController.updateUserById
+);
 
 // -------------------- Delete User By Id --------------------
 userRoute.delete(
