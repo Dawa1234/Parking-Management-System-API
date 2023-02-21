@@ -88,7 +88,7 @@ const bookSelectedSlots = (req, res, next) => {
   res.status(200).json({ parkingSlots: req.body.parkingSlots });
 };
 
-// ------------------------- Cancle Booking slot -------------------------
+// ------------------------- Cancle Booking slots -------------------------
 const cancelBooking = (req, res, next) => {
   // store in the variable
   let slotId = req.params.slotId;
