@@ -37,7 +37,7 @@ const parkingSlots = (req, res, next) => {
           occupied: slot.occupied,
           floorId: slot.floorId.floorNum,
           user: slot.userId,
-          // bookedBy: slot.user,
+          vehicleCategory: slot.vehicleCategory,
         };
       });
       res.status(201).json({ parkingSlots: allSlots });
@@ -71,7 +71,7 @@ const bookParkingSlot = (req, res, next) => {
     })
     .catch((err) => next(err));
 };
-// ------------------------- Book parking slot -------------------------
+// ------------------------- Book parking slot in list -------------------------
 const bookSelectedSlots = (req, res, next) => {
   // store in the variable
   let userId = req.body.userId;

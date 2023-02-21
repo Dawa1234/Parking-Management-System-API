@@ -27,13 +27,16 @@ userRoute.delete(
   verifyAdmin,
   UserController.deleteAllUser
 );
-// -------------------- Delete User By Id --------------------
+// -------------------- Update User By Id --------------------
 userRoute.put(
   "/updateProfile",
   uploadImage.single("image"),
   verifyUser,
   UserController.updateUserById
 );
+
+// -------------------- Update User By Id --------------------
+userRoute.put("/updatePassword", verifyUser, UserController.updatePassword);
 
 // -------------------- Delete User By Id --------------------
 userRoute.delete(

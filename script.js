@@ -25,6 +25,8 @@ mongoose
   })
   .catch((err) => console.log(err));
 
+app.use("/Images", express.static(path.join(__dirname, "/Images")));
+
 // --------------------------- Most Important ---------------------------
 // To see request.
 app.use(morgan("tiny"));
@@ -35,7 +37,6 @@ app.use(express.urlencoded({ urlencoded: true }));
 
 // ------------------ Routes ------------------------------------
 // User Route
-app.use("/Images", express.static(path.join(__dirname, "/Images")));
 app.use("/user", routeUser);
 app.use(authentication.verifyUser);
 app.use("/vehicle", routeVehicle);

@@ -182,6 +182,33 @@ const getUserById = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+// ------------------------------------------------ Update password ------------------------------------------------
+const updatePassword = (req, res, next) => {
+  const userId = req.query.userId;
+  User.findById(userId)
+    .then((user) => {
+      // check old password and current password of the user
+      bcryptjs.compare(req.body.oldPassword, user.password, (err, matched) => {
+        if (err) return next(err);
+
+        if (!matched) {
+          let err = new Error("Old password did not match");
+          return next(err);
+        }
+        // convert the new password into hash and save
+        bcryptjs.hash(req.body.newPassword, 10, (err, hash) => {
+          if (err) return next(err);
+
+          user.password = hash;
+          user.save().then((updatedUser) => {
+            res.status(200).json(updatedUser);
+          });
+        });
+      });
+    })
+    .catch((err) => next(err));
+};
+
 module.exports = {
   loginController,
   registerController,
@@ -190,4 +217,5 @@ module.exports = {
   deleteAllUser,
   deleteUserById,
   updateUserById,
+  updatePassword,
 };
