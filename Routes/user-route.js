@@ -35,8 +35,14 @@ userRoute.put(
   UserController.updateUserById
 );
 
-// -------------------- Update User By Id --------------------
+// -------------------- Update Password By Id --------------------
 userRoute.put("/updatePassword", verifyUser, UserController.updatePassword);
+
+// Get booked slots from the user (bike)
+userRoute.get("/bike", verifyUser, UserController.getSlotsbyBike);
+
+// Get booked slots from the user (car)
+userRoute.get("/car", verifyUser, UserController.getSlotsbyCar);
 
 // -------------------- Delete User By Id --------------------
 userRoute.delete(
@@ -45,5 +51,6 @@ userRoute.delete(
   verifyAdmin,
   UserController.deleteUserById
 );
+
 // eporting module.
 module.exports = userRoute;

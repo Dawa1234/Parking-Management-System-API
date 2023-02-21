@@ -55,22 +55,22 @@ const parkingSlotsById = (req, res, next) => {
 };
 
 // ------------------------- Book parking slot -------------------------
-const bookParkingSlot = (req, res, next) => {
-  parkingModel
-    .findByIdAndUpdate(req.params.slotId, { $set: req.body }, { new: true })
-    .then((slots) => {
-      //   console.log(req.user);
-      if (req.body.booked) {
-        slots.user = req.user.userId;
-        slots.save();
-        res.status(201).json(slots);
-        return;
-      }
-      res.status(201).json(slots);
-      //   console.log(slots.user);
-    })
-    .catch((err) => next(err));
-};
+// const bookParkingSlot = (req, res, next) => {
+//   parkingModel
+//     .findByIdAndUpdate(req.params.slotId, { $set: req.body }, { new: true })
+//     .then((slots) => {
+//       //   console.log(req.user);
+//       if (req.body.booked) {
+//         slots.user = req.user.userId;
+//         slots.save();
+//         res.status(201).json(slots);
+//         return;
+//       }
+//       res.status(201).json(slots);
+//       //   console.log(slots.user);
+//     })
+//     .catch((err) => next(err));
+// };
 // ------------------------- Book parking slot in list -------------------------
 const bookSelectedSlots = (req, res, next) => {
   // store in the variable
@@ -86,6 +86,20 @@ const bookSelectedSlots = (req, res, next) => {
     });
   });
   res.status(200).json({ parkingSlots: req.body.parkingSlots });
+};
+
+// ------------------------- Cancle Booking slot -------------------------
+const cancelBooking = (req, res, next) => {
+  // store in the variable
+  let slotId = req.params.slotId;
+  // map and updated each slots.
+  parkingModel.findById(slotId).then((slot) => {
+    slot.userId = null;
+    slot.booked = false;
+    slot.save().then((cancel) => {
+      res.status(200).json({ parkingSlots: cancel });
+    });
+  });
 };
 
 // ------------------------------ Delete all slots ------------------------------
@@ -105,7 +119,8 @@ module.exports = {
   newParkingSlot,
   parkingSlots,
   parkingSlotsById,
-  bookParkingSlot,
+  // bookParkingSlot,
   deleteParkingSlots,
   bookSelectedSlots,
+  cancelBooking,
 };

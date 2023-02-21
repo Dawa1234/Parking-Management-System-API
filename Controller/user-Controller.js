@@ -1,6 +1,7 @@
 const User = require("../Model/user-model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const parkingSlotModel = require("../Model/parkingSlot-model");
 
 // --------------- See all user -------------------------
 const getAllUser = async (req, res, next) => {
@@ -209,6 +210,56 @@ const updatePassword = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+// Get all the booked slots of bike of specific user by id
+const getSlotsbyBike = (req, res, next) => {
+  const userId = req.query.userId;
+  parkingSlotModel
+    .find({ vehicleCategory: "Bike", userId: userId })
+    .populate("floorId")
+    // .select("-slot -__v")
+
+    .then((bike) => {
+      let allBikeSlot = bike.map((allSlots) => {
+        return {
+          _id: allSlots._id,
+          slot: allSlots.slot,
+          row: allSlots.row,
+          column: allSlots.column,
+          booked: allSlots.booked,
+          occupied: allSlots.occupied,
+          floorId: allSlots.floorId.floorNum,
+          userId: allSlots.userId,
+          vehicleCategory: allSlots.vehicleCategory,
+        };
+      });
+      res.status(200).json({ parkingSlots: allBikeSlot });
+    });
+};
+
+// Get all the booked slots of car of specific user by id
+const getSlotsbyCar = (req, res, next) => {
+  const userId = req.query.userId;
+  parkingSlotModel
+    .find({ vehicleCategory: "Car", userId: userId })
+    .populate("floorId")
+    .then((car) => {
+      let allCarSlot = car.map((allSlots) => {
+        return {
+          _id: allSlots._id,
+          slot: allSlots.slot,
+          row: allSlots.row,
+          column: allSlots.column,
+          booked: allSlots.booked,
+          occupied: allSlots.occupied,
+          floorId: allSlots.floorId.floorNum,
+          userId: allSlots.userId,
+          vehicleCategory: allSlots.vehicleCategory,
+        };
+      });
+      res.status(200).json({ parkingSlots: allCarSlot });
+    });
+};
+
 module.exports = {
   loginController,
   registerController,
@@ -218,4 +269,6 @@ module.exports = {
   deleteUserById,
   updateUserById,
   updatePassword,
+  getSlotsbyBike,
+  getSlotsbyCar,
 };
