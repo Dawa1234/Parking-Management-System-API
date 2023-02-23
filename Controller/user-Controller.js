@@ -2,7 +2,7 @@ const User = require("../Model/user-model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const parkingSlotModel = require("../Model/parkingSlot-model");
-
+const transactionModel = require("../Model/transaction-model");
 // --------------- See all user -------------------------
 const getAllUser = async (req, res, next) => {
   let allUser;
@@ -260,6 +260,26 @@ const getSlotsbyCar = (req, res, next) => {
     });
 };
 
+const getTransaction = (req, res, next) => {
+  console.log(req.query.userId);
+  transactionModel.find({ userId: req.query.userId }).then((allTransaction) => {
+    res.status(201).json({ allTransaction: allTransaction });
+  });
+};
+const addTransaction = (req, res, next) => {
+  // res.status(201).json(req.body);
+  transactionModel.create(req.body).then((newTransaction) => {
+    res.status(201).json(newTransaction);
+  });
+};
+
+const deleteAllTransaction = (req, res, next) => {
+  // res.status(201).json(req.body);
+  transactionModel.deleteMany().then((newTransaction) => {
+    res.status(201).json(newTransaction);
+  });
+};
+
 module.exports = {
   loginController,
   registerController,
@@ -271,4 +291,7 @@ module.exports = {
   updatePassword,
   getSlotsbyBike,
   getSlotsbyCar,
+  getTransaction,
+  addTransaction,
+  deleteAllTransaction,
 };

@@ -12,6 +12,6 @@ parkingRoute
 parkingRoute
   .route("/:slotId")
   .get(parkingController.parkingSlotsById) // get parking slot by _id.
-  .put(parkingController.cancelBooking); // book parking slot
+  .put(parkingController.cancelBooking); // cancel booking
 
 module.exports = parkingRoute;

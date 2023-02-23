@@ -52,5 +52,12 @@ userRoute.delete(
   UserController.deleteUserById
 );
 
+// -------------------- Delete User By Id --------------------
+userRoute
+  .route("/transaction")
+  .get(UserController.getTransaction)
+  .post(UserController.addTransaction)
+  .delete(UserController.deleteAllTransaction);
+
 // eporting module.
 module.exports = userRoute;
