@@ -54,23 +54,6 @@ const parkingSlotsById = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-// ------------------------- Book parking slot -------------------------
-// const bookParkingSlot = (req, res, next) => {
-//   parkingModel
-//     .findByIdAndUpdate(req.params.slotId, { $set: req.body }, { new: true })
-//     .then((slots) => {
-//       //   console.log(req.user);
-//       if (req.body.booked) {
-//         slots.user = req.user.userId;
-//         slots.save();
-//         res.status(201).json(slots);
-//         return;
-//       }
-//       res.status(201).json(slots);
-//       //   console.log(slots.user);
-//     })
-//     .catch((err) => next(err));
-// };
 // ------------------------- Book parking slot in list -------------------------
 const bookSelectedSlots = (req, res, next) => {
   // store in the variable
@@ -83,9 +66,70 @@ const bookSelectedSlots = (req, res, next) => {
       slot.userId = userId;
       slot.booked = true;
       slot.save();
+      console.log("saved!!");
     });
   });
-  res.status(200).json({ parkingSlots: req.body.parkingSlots });
+  res.status(200).json({ status: "successfully booked" });
+};
+
+// ------------------------- Occupy parking slot in list [Admin] -------------------------
+const occupySlots = (req, res, next) => {
+  // store in the variable
+  let slotId = req.body.parkingSlots;
+  // map and updated each slots.
+  parkingModel
+    .findById(slotId)
+    .populate("floorId")
+    .then((slot) => {
+      slot.booked = true;
+      slot.occupied = true;
+      slot.save().then((updatedSlots) => {
+        let allSlots = {
+          _id: updatedSlots._id,
+          slot: updatedSlots.slot,
+          row: updatedSlots.row,
+          column: updatedSlots.column,
+          booked: updatedSlots.booked,
+          occupied: updatedSlots.occupied,
+          floorId: updatedSlots.floorNum,
+          user: updatedSlots.userId,
+          vehicleCategory: updatedSlots.vehicleCategory,
+        };
+        res.status(200).json(allSlots);
+      });
+    });
+};
+
+// ------------------------- Occupy parking slot in list [Admin] -------------------------
+const removeOccupiedSlot = (req, res, next) => {
+  // store in the variable
+  let slotId = req.body.parkingSlots;
+  // map and updated each slots.
+  parkingModel
+    .findById(slotId)
+    .populate("floorId")
+    .then((slot) => {
+      // res.status(200).json({ status: slot });
+      slot.userId = null;
+      slot.booked = false;
+      slot.occupied = false;
+      slot.save().then((updatedSlot) => {
+        let allSlots = updatedSlot.map((updatedSlots) => {
+          return {
+            _id: updatedSlots._id,
+            slot: updatedSlots.slot,
+            row: updatedSlots.row,
+            column: updatedSlots.column,
+            booked: updatedSlots.booked,
+            occupied: updatedSlots.occupied,
+            floorId: slot.updatedSlots.floorNum,
+            user: updatedSlots.userId,
+            vehicleCategory: updatedSlots.vehicleCategory,
+          };
+        });
+        res.status(200).json(updatedSlot);
+      });
+    });
 };
 
 // ------------------------- Cancle Booking slots -------------------------
@@ -119,8 +163,9 @@ module.exports = {
   newParkingSlot,
   parkingSlots,
   parkingSlotsById,
-  // bookParkingSlot,
   deleteParkingSlots,
   bookSelectedSlots,
   cancelBooking,
+  occupySlots,
+  removeOccupiedSlot,
 };

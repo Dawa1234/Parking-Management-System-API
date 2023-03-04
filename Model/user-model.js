@@ -32,6 +32,10 @@ const userModel = mongoose.Schema({
     type: String,
     required: true,
   },
+  forgetPassword: {
+    type: String,
+    required: true,
+  },
   role: {
     // Role admin
     type: String,

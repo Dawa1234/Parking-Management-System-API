@@ -44,6 +44,9 @@ userRoute.get("/bike", verifyUser, UserController.getSlotsbyBike);
 // Get booked slots from the user (car)
 userRoute.get("/car", verifyUser, UserController.getSlotsbyCar);
 
+// Check Passwrd
+userRoute.post("/checkPassword", verifyUser, UserController.checkPassword);
+
 // -------------------- Delete User By Id --------------------
 userRoute.delete(
   "/deleteUser",

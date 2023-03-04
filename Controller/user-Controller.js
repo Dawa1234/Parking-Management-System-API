@@ -45,43 +45,82 @@ const loginController = (req, res, next) => {
         res.status(403);
         return next(err);
       }
-      // Compare user password and user's hashed password.
-      bcryptjs.compare(req.body.password, user.password, (err, success) => {
-        if (err) return next(err);
-        if (!success) {
+      // If login through forget Password
+      if (req.body.forgetPassword) {
+        if (user.forgetPassword != req.body.forgetPassword) {
           let err = new Error("Password does not match");
           res.status(401);
           return next(err);
         }
-
-        // Actual Data of the user
-        let userData = {
-          _id: user._id,
-          username: user.username,
-          password: user.password,
-          profileImage: user.profileImage,
-          fullname: user.fullname,
-          contact: user.contact,
-          email: user.email,
-          role: user.role,
-        };
-
-        // Generating the data into a token.
-        jwt.sign(
-          userData,
-          process.env.SECRET,
-          { expiresIn: "1d" },
-          (err, encoded) => {
-            if (err) return next(err);
-            res.status(203).json({
-              user: userData,
-              token: encoded,
-              role: userData.role,
-              status: "LOGGED IN Successful.",
-            });
+        if (user.forgetPassword == req.body.forgetPassword) {
+          // Actual Data of the user
+          let userData = {
+            _id: user._id,
+            username: user.username,
+            password: user.password,
+            forgetPassword: user.forgetPassword,
+            profileImage: user.profileImage,
+            fullname: user.fullname,
+            contact: user.contact,
+            email: user.email,
+            role: user.role,
+          };
+          // Generating the data into a token.
+          jwt.sign(
+            userData,
+            process.env.SECRET,
+            { expiresIn: "1d" },
+            (err, encoded) => {
+              if (err) return next(err);
+              res.status(203).json({
+                user: userData,
+                token: encoded,
+                role: userData.role,
+                status: "LOGGED IN Successful.",
+              });
+            }
+          );
+        }
+      } else {
+        // Compare user password and user's hashed password.
+        bcryptjs.compare(req.body.password, user.password, (err, success) => {
+          if (err) return next(err);
+          if (!success) {
+            let err = new Error("Password does not match");
+            res.status(401);
+            return next(err);
           }
-        );
-      });
+
+          // Actual Data of the user
+          let userData = {
+            _id: user._id,
+            username: user.username,
+            password: user.password,
+            forgetPassword: user.forgetPassword,
+            profileImage: user.profileImage,
+            fullname: user.fullname,
+            contact: user.contact,
+            email: user.email,
+            role: user.role,
+          };
+
+          // Generating the data into a token.
+          jwt.sign(
+            userData,
+            process.env.SECRET,
+            { expiresIn: "1d" },
+            (err, encoded) => {
+              if (err) return next(err);
+              res.status(203).json({
+                user: userData,
+                token: encoded,
+                role: userData.role,
+                status: "LOGGED IN Successful.",
+              });
+            }
+          );
+        });
+      }
     })
     .catch((err) => next(err));
 };
@@ -111,6 +150,7 @@ const registerController = (req, res, next) => {
           email: req.body.email,
           username: req.body.username,
           password: hash,
+          forgetPassword: req.body.forgetPassword,
           role: req.body.role,
         });
         // Then save to the database.
@@ -165,6 +205,7 @@ const updateUserById = (req, res, next) => {
       user.email = newUser.email;
       user.contact = newUser.contact;
       user.username = newUser.username;
+      // user.forgetPassword = newUser.forgetPassword;
       // then save
       user.save().then((updatedUser) => {
         res.status(200).json(updatedUser);
@@ -280,6 +321,31 @@ const deleteAllTransaction = (req, res, next) => {
   });
 };
 
+const checkPassword = (req, res, next) => {
+  User.findOne({ username: req.body.username }).then((user) => {
+    // If user doesnot exist.
+    if (user == null) {
+      let err = new Error("Invalid Credintials");
+      res.status(403);
+      return next(err);
+    }
+
+    bcryptjs.compare(req.body.password, user.password, (err, success) => {
+      if (err) return next(err);
+
+      if (!success) {
+        let err = new Error("Password does not match");
+        res.status(401);
+        return next(err);
+      }
+
+      res.status(200).json({
+        success: true,
+      });
+    });
+  });
+};
+
 module.exports = {
   loginController,
   registerController,
@@ -294,4 +360,5 @@ module.exports = {
   getTransaction,
   addTransaction,
   deleteAllTransaction,
+  checkPassword,
 };

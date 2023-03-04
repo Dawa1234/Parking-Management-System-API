@@ -2,6 +2,9 @@ const express = require("express");
 const parkingRoute = express.Router();
 const parkingController = require("../Controller/parkingSlot-controller");
 
+parkingRoute.put("/occupy", parkingController.occupySlots); // occupy the parking slots [Admin]
+parkingRoute.put("/remove", parkingController.removeOccupiedSlot); // remove occupied slots [Admin]
+
 parkingRoute
   .route("/")
   .get(parkingController.parkingSlots) // Get all parking slot.
