@@ -13,6 +13,7 @@ const routeUser = require("./Routes/user-route");
 const routeVehicle = require("./Routes/vehicleCategory-route");
 const routeParking = require("./Routes/parkingSlot-route");
 const routeFloor = require("./Routes/floor-route");
+const routeTransaction = require("./Routes/transaction-route");
 // ------------------ Authentication Middleware ------------------
 const authentication = require("./Middleware/authentication");
 
@@ -42,6 +43,9 @@ app.use(authentication.verifyUser);
 app.use("/vehicle", routeVehicle);
 app.use("/parkingSlot", routeParking);
 app.use("/floor", routeFloor);
+
+app.use("/transaction", routeTransaction);
+
 // --------------------------- Errors ------------------------------------
 app.use((err, req, res, next) => {
   res.status(500).json({ Error: err.message });

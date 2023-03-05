@@ -151,7 +151,6 @@ const registerController = (req, res, next) => {
           username: req.body.username,
           password: hash,
           forgetPassword: req.body.forgetPassword,
-          role: req.body.role,
         });
         // Then save to the database.
         user
