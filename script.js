@@ -18,9 +18,12 @@ const routeTransaction = require("./Routes/transaction-route");
 const authentication = require("./Middleware/authentication");
 
 // ------------------------ Database connection ------------------------
+const databaseURL =
+  process.env.NODE_ENV == "test" ? process.env.Test_DB_URL : process.env.DB_URL;
+console.log(databaseURL);
 mongoose.set("strictQuery", true);
 mongoose
-  .connect("mongodb://127.0.0.1:27017/PR")
+  .connect(databaseURL)
   .then(() => {
     console.log("Database Connected successfully");
   })
@@ -55,3 +58,5 @@ app.use((err, req, res, next) => {
 app.listen(3001, () => {
   console.log("Out port is running at 3001");
 });
+
+module.exports = app;
