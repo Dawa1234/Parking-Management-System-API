@@ -2,6 +2,7 @@ const User = require("../Model/user-model");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const parkingSlotModel = require("../Model/parkingSlot-model");
+const floorModel = require("../Model/floor-model");
 const transactionModel = require("../Model/transaction-model");
 // --------------- See all user -------------------------
 const getAllUser = async (req, res, next) => {
@@ -186,7 +187,6 @@ const updateUserById = (req, res, next) => {
   const userId = req.query.userId;
   const newUser = req.body;
   const file = req.file;
-  console.log(file);
   User.findById(userId)
     .then((user) => {
       if (user == null) {
@@ -301,15 +301,46 @@ const getSlotsbyCar = (req, res, next) => {
 };
 
 const getTransaction = (req, res, next) => {
-  console.log(req.query.userId);
+  // console.log(req.query.userId);
   transactionModel.find({ userId: req.query.userId }).then((allTransaction) => {
     res.status(201).json({ allTransaction: allTransaction });
   });
 };
+
+// payment from android device
 const addTransaction = (req, res, next) => {
-  // res.status(201).json(req.body);
   transactionModel.create(req.body).then((newTransaction) => {
     res.status(201).json(newTransaction);
+  });
+};
+// payment and booking
+const paymentAndBooking = (req, res, next) => {
+  // slots to be booked
+  const selectedSlots = req.body.selectedSlots;
+  // transaction
+  const transaction = {
+    date: req.body.date,
+    amount: req.body.amount,
+    vehicleCategory: req.body.vehicleCategory,
+    userId: req.body.userId,
+  };
+  const userId = req.body.userId;
+  // parking slot of a floor to be sent as a response
+  const floorId = req.body.floorId;
+  selectedSlots.map((slotId) => {
+    parkingSlotModel.findById(slotId).then((slots) => {
+      slots.booked = true;
+      slots.userId = userId;
+      slots.save();
+    });
+  });
+  transactionModel.create(transaction).then(() => {
+    floorModel
+      .findById(floorId)
+      .populate("parkingSlot")
+      .then((allParkingSlot) => {
+        res.status(200).json({ parkingSlots: allParkingSlot });
+      });
   });
 };
 
@@ -345,6 +376,30 @@ const checkPassword = (req, res, next) => {
   });
 };
 
+// for web
+const getBookedSlots = (req, res, next) => {
+  const userId = req.params.userId;
+  parkingSlotModel
+    .find({ userId: userId })
+    .populate("floorId")
+    .then((bookedSlot) => {
+      let allSlot = bookedSlot.map((allSlots) => {
+        return {
+          _id: allSlots._id,
+          slot: allSlots.slot,
+          row: allSlots.row,
+          column: allSlots.column,
+          booked: allSlots.booked,
+          occupied: allSlots.occupied,
+          floorId: allSlots.floorId.floorNum,
+          userId: allSlots.userId,
+          vehicleCategory: allSlots.vehicleCategory,
+        };
+      });
+      res.status(200).json(allSlot);
+    });
+};
+
 module.exports = {
   loginController,
   registerController,
@@ -360,4 +415,6 @@ module.exports = {
   addTransaction,
   deleteAllTransaction,
   checkPassword,
+  paymentAndBooking,
+  getBookedSlots,
 };

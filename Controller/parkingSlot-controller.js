@@ -132,6 +132,7 @@ const removeOccupiedSlot = (req, res, next) => {
 
 // ------------------------- Cancle Booking slots -------------------------
 const cancelBooking = (req, res, next) => {
+  // res.send(req.params.slotId);
   // store in the variable
   let slotId = req.params.slotId;
   // map and updated each slots.
@@ -139,7 +140,7 @@ const cancelBooking = (req, res, next) => {
     slot.userId = null;
     slot.booked = false;
     slot.save().then((cancel) => {
-      res.status(200).json({ parkingSlots: cancel });
+      res.status(200).json({ parkingSlot: cancel });
     });
   });
 };

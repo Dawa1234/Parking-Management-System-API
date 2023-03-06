@@ -7,7 +7,6 @@ const transactionSchema = mongoose.Schema({
   },
   slot: {
     type: String,
-    required: true,
   },
   userId: {
     type: String,

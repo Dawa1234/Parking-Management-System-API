@@ -114,7 +114,6 @@ const deleteFloorFromVehicle = (req, res, next) => {
 const getFloorByCategory = (req, res, next) => {
   try {
     vehicleModel
-      .find()
       .find({ vehicleCategory: req.params.vehicleId })
       .populate("floor")
       .then((vehicle) => {

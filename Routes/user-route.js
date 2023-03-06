@@ -8,7 +8,9 @@ const uploadImage = require("../Middleware/uploadImage");
 userRoute.get("/", verifyUser, verifyAdmin, UserController.getAllUser);
 // -------------------- See user by Id ------------------------------
 userRoute.get("/getUser", verifyUser, verifyAdmin, UserController.getUserById);
-
+userRoute.post("/transaction/booking", UserController.paymentAndBooking);
+// Get booked slots from the user
+userRoute.get("/bookedSlot/:userId", verifyUser, UserController.getBookedSlots);
 // -------------------- Add User -------------------------
 
 userRoute.post(
@@ -55,7 +57,7 @@ userRoute.delete(
   UserController.deleteUserById
 );
 
-// -------------------- Delete User By Id --------------------
+// -------------------- User transaction --------------------
 userRoute
   .route("/transaction")
   .get(UserController.getTransaction)
